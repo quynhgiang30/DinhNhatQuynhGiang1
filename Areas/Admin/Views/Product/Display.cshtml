@@ -1,0 +1,64 @@
+﻿@model DinhNhatQuynhGiang1.Models.Product
+
+@{
+    ViewData["Title"] = "Display";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="card-title">@Model.Name</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Product Image -->
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="col-md-4">
+                        <img src="@Model.ImageUrl" alt="Product Image" class="img-fluid rounded" />
+                    </div>
+                }
+                <!-- Product Details -->
+                <div class="col-md-8">
+                    <h3 class="text-success">Price: $@Model.Price.ToString("#,##0.00")</h3>
+                    <p class="lead">@Model.Description</p>
+                    <p><strong>Category:</strong> @(Model.Category?.Name ?? "No Category")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<!-- Custom CSS -->
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+
+    .card-footer {
+        background-color: #1a3a63;
+        border-top: none;
+    }
+
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+        color: #4a5568;
+    }
+</style>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

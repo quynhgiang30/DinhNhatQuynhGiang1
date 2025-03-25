@@ -1,0 +1,170 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1a3a63 0%, #2c5282 100%);">
+                    <h2 class="font-weight-bold mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <!-- Left side - Registration form -->
+                        <div class="col-lg-7 p-4 p-md-5">
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <h3 class="text-center mb-4 fw-bold" style="color: #1a3a63;">Create a new account</h3>
+
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 shadow-sm" role="alert"></div>
+
+                                <div class="mb-4">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.FullName" class="form-control rounded-3 border-0 shadow-sm" autocomplete="fullname" aria-required="true" />
+                                        <label asp-for="Input.FullName" class="text-secondary"><i class="bi bi-person-fill me-2"></i>Full Name</label>
+                                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Email" class="form-control rounded-3 border-0 shadow-sm" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                        <label asp-for="Input.Email" class="text-secondary"><i class="bi bi-envelope-fill me-2"></i>Email</label>
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.Password" class="form-control rounded-3 border-0 shadow-sm" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                            <label asp-for="Input.Password" class="text-secondary"><i class="bi bi-lock-fill me-2"></i>Password</label>
+                                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3 mt-md-0">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.ConfirmPassword" class="form-control rounded-3 border-0 shadow-sm" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                            <label asp-for="Input.ConfirmPassword" class="text-secondary"><i class="bi bi-shield-lock-fill me-2"></i>Confirm</label>
+                                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-floating">
+                                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select rounded-3 border-0 shadow-sm">
+                                            <option disabled selected>-Select Role-</option>
+                                        </select>
+                                        <label asp-for="Input.Role" class="text-secondary"><i class="bi bi-person-badge-fill me-2"></i>Role</label>
+                                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button id="registerSubmit" type="submit" class="btn btn-lg text-white py-3 rounded-pill shadow-sm fw-bold" style="background: linear-gradient(to right, #1a3a63, #2c5282); border: none; transition: all 0.3s ease;">
+                                        <i class="bi bi-person-plus-fill me-2"></i>Register
+                                    </button>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <a asp-page="./Login" class="text-decoration-none fw-bold" style="color: #2c5282;">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i>Already have an account? Login
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right side - External logins and benefits -->
+                        <div class="col-lg-5 p-4 p-md-5" style="background-color: #f8f9fa;">
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold" style="color: #1a3a63;">
+                                    <i class="bi bi-link-45deg me-2"></i>Use another service
+                                </h3>
+                                <hr class="my-3" style="height: 2px; background: linear-gradient(to right, #fff, #1a3a63, #fff);" />
+                            </div>
+
+                            @{
+                                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                {
+                                            <div class="alert rounded-3 shadow-sm" role="alert" style="background-color: #e2f0fb; color: #14385e; border: none;">
+                                                <p class="mb-0">
+                                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                                    There are no external authentication services configured. See this 
+                                                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="fw-bold text-decoration-none" style="color: #1a3a63;">
+                                                        article about setting up this ASP.NET application
+                                                    </a> to support logging in via external services.
+                                                </p>
+                                            </div>
+                                }
+                                else
+                                {
+                                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-3 mb-4">
+                                        @foreach (var provider in Model.ExternalLogins!)
+                                        {
+                                                        <button type="submit" class="btn btn-outline-secondary rounded-pill py-2 shadow-sm" 
+                                                                name="provider" value="@provider.Name" 
+                                                                title="Log in using your @provider.DisplayName account"
+                                                                style="transition: all 0.3s ease;">
+                                                            <i class="bi bi-@(provider.Name.ToLower()) me-2"></i>Continue with @provider.DisplayName
+                                                        </button>
+                                        }
+                                            </form>
+                                }
+                            }
+
+                            <div class="mt-4 text-center">
+                                <div class="position-relative mb-4">
+                                    <img src="/api/placeholder/300/200" alt="Registration benefits" class="img-fluid rounded-3 shadow" style="border: 3px solid #e2f0fb;" />
+                                    <div class="position-absolute" style="bottom: -15px; left: 50%; transform: translateX(-50%);">
+                                        <div class="badge bg-white text-primary px-3 py-2 shadow rounded-pill fw-bold" style="color: #1a3a63;">
+                                            <i class="bi bi-stars me-1"></i>Join Us Today
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-4 mt-4 rounded-3 shadow-sm">
+                                    <h4 class="fw-bold" style="color: #1a3a63;">
+                                        <i class="bi bi-people-fill me-2"></i>Join Our Community
+                                    </h4>
+                                    <p class="text-muted mb-0">Create an account to access exclusive content, personalized features, and connect with like-minded individuals.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center py-3" style="background: linear-gradient(to right, #f8fafc, #e2f0fb, #f8fafc); color: #4a5568;">
+                    <p class="m-0 fw-bold">&copy; @DateTime.Now.Year - Your Company Name</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <!-- Add Bootstrap Icons for icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+        <!-- Add custom CSS for hover effects -->
+        <style>
+            .form-control:focus, .form-select:focus {
+                border-color: #2c5282;
+                box-shadow: 0 0 0 0.25rem rgba(42, 82, 130, 0.25);
+            }
+
+            #registerSubmit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(42, 82, 130, 0.3);
+            }
+
+            .btn-outline-secondary:hover {
+                background-color: #f8f9fa;
+                color: #1a3a63;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+}
